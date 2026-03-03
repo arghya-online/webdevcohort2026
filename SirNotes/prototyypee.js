@@ -1,0 +1,3 @@
+const prithiviraj = {
+  name,
+};
