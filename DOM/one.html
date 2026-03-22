@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DOM Experimentation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        padding: 20px;
+        margin: 0;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        background-color: #333;
+        color: white;
+        padding: 20px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+      .section {
+        margin-bottom: 30px;
+        padding: 15px;
+        border-left: 4px solid #007bff;
+        background-color: #f9f9f9;
+      }
+      .highlight {
+        background-color: #fff3cd;
+        padding: 5px;
+      }
+      button {
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .box {
+        width: 100px;
+        height: 100px;
+        background-color: #28a745;
+        margin: 10px 0;
+        padding: 10px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      ul,
+      ol {
+        margin: 10px 0;
+      }
+      li {
+        margin: 5px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Main Header Section -->
+      <div id="mainHeader" class="header">
+        <h1 id="title">DOM Experimentation Playground</h1>
+      </div>
+
+      <!-- Heading Tags Section -->
+      <div id="headingSection" class="section">
+        <h2>Headings</h2>
+        <h3 id="h3Element">This is an H3 heading</h3>
+        <h4 id="h4Element" class="highlight">This is an H4 heading</h4>
+        <h5 id="h5Element" class="highlight">This is an H5 heading</h5>
+        <h6 id="h6Element">This is an H6 heading</h6>
+      </div>
+
+      <!-- Paragraph Section -->
+      <div id="paragraphSection" class="section">
+        <h2>Paragraphs</h2>
+        <p id="para1">This is the first paragraph with id "para1".</p>
+        <p id="para2" class="highlight">
+          This is the second paragraph with id "para2" and class "highlight".
+        </p>
+        <p class="paragraph">This is a paragraph with class "paragraph".</p>
+        <p class="paragraph">Another paragraph with class "paragraph".</p>
+        <p>Regular paragraph without any id or class.</p>
+      </div>
+
+      <!-- Div Section with Classes and IDs -->
+      <div id="divSection" class="section">
+        <h2>Divs with Classes and IDs</h2>
+        <div id="div1" class="box">Box 1</div>
+        <div id="div2" class="box highlight">Box 2</div>
+        <div id="div3" class="container highlight">Box 3</div>
+        <div class="box">Box without ID</div>
+      </div>
+
+      <!-- List Section -->
+      <div id="listSection" class="section">
+        <h2>Lists</h2>
+        <h3>Unordered List</h3>
+        <ul id="unorderedList">
+          <li id="item1" class="list-item">Item 1</li>
+          <li id="item2" class="list-item">Item 2</li>
+          <li id="item3" class="list-item">Item 3</li>
+          <li class="list-item">Item 4</li>
+        </ul>
+
+        <h3>Ordered List</h3>
+        <ol id="orderedList">
+          <li id="oitem1">First</li>
+          <li id="oitem2">Second</li>
+          <li id="oitem3">Third</li>
+        </ol>
+      </div>
+
+      <!-- Button Section -->
+      <div id="buttonSection" class="section">
+        <h2>Buttons</h2>
+        <button id="btn1">Button 1</button>
+        <button id="btn2" class="primary">Button 2</button>
+        <button class="btn secondary">Button 3</button>
+        <button id="clickMe">Click Me!</button>
+      </div>
+
+      <!-- Form Section -->
+      <div id="formSection" class="section">
+        <h2>Form Elements</h2>
+        <form id="testForm">
+          <label for="inputName">Name:</label>
+          <input type="text" id="inputName" name="name" value="John Doe" />
+
+          <label for="inputEmail">Email:</label>
+          <input type="email" id="inputEmail" name="email" />
+
+          <label for="textarea">Message:</label>
+          <textarea id="textarea" name="message" rows="3"></textarea>
+
+          <label for="selectOption">Choose:</label>
+          <select id="selectOption" name="options">
+            <option value="opt1">Option 1</option>
+            <option value="opt2">Option 2</option>
+            <option value="opt3">Option 3</option>
+          </select>
+
+          <br />
+          <input type="checkbox" id="checkbox1" name="agree" />
+          <label for="checkbox1">I Agree</label>
+
+          <input type="radio" id="radio1" name="choice" value="yes" />
+          <label for="radio1">Yes</label>
+          <input type="radio" id="radio2" name="choice" value="no" />
+          <label for="radio2">No</label>
+
+          <button type="submit" id="submitBtn">Submit</button>
+        </form>
+      </div>
+
+      <!-- Span and Inline Elements -->
+      <div id="inlineSection" class="section">
+        <h2>Inline Elements</h2>
+        <p>
+          This is a paragraph with
+          <span id="span1">a span element</span>
+          and
+          <span id="span2" class="highlight">another span</span>
+          inside it.
+        </p>
+        <p>
+          <strong id="strong1">Bold text</strong>
+          <em id="em1">Italic text</em>
+          <u id="underline1">Underlined text</u>
+        </p>
+      </div>
+
+      <!-- Data Attributes Section -->
+      <div id="dataSection" class="section">
+        <h2>Elements with Data Attributes</h2>
+        <div id="dataDiv1" data-id="123" data-name="item1" data-type="product">
+          Item with data attributes
+        </div>
+        <div id="dataDiv2" data-status="active" data-count="5">
+          Another element with data
+        </div>
+      </div>
+
+      <!-- Output Section -->
+      <div
+        id="output"
+        class="section"
+        style="background-color: #e7f3ff; border-left-color: #0047ab"
+      >
+        <h2>Output</h2>
+        <p id="outputText">Experiment results will appear here...</p>
+        <div id="results"></div>
+      </div>
+    </div>
+
+    <script>
+      // Simple example: log when page loads
+      console.log("DOM is ready for experimentation!");
+    </script>
+  </body>
+</html>

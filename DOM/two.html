@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    setTimeout(() => {
+      const newElement = document.createElement("p");
+      newElement.textContent = "This paragraph was added after 2 seconds!";
+      document.body.appendChild(newElement);
+    }, 2000);
+  </script>
+</html>

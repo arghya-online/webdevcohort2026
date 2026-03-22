@@ -1,340 +1,103 @@
-/**
- * ============================================================
- * ASYNC/AWAIT & PROMISES - TUTORIAL & LEARNING GUIDE
- * ============================================================
- *
- * This file covers:
- * 1. Promise States and Basics
- * 2. Promise Resolution and .then()
- * 3. Promise API Methods
- * 4. Async/Await Fundamentals
- * 5. Error Handling with Try/Catch
- */
+// ============= ASYNC/AWAIT & PROMISES TUTORIAL =============
+// Promise States: PENDING -> RESOLVED/REJECTED
 
-// ========== SECTION 1: PROMISE BASICS ==========
-
-console.log("\n--- SECTION 1: Promise Basics ---\n");
-
-/**
- * A Promise has three states:
- * 1. PENDING: Initial state, operation hasn't completed yet
- * 2. RESOLVED (FULFILLED): Operation completed successfully
- * 3. REJECTED: Operation failed
- */
-
-// Creating a basic promise with resolve (success) callback
+// 1. BASIC PROMISE - Creating and checking state
 const basicPromise = new Promise((resolve, reject) => {
-  // resolve and reject are callback functions passed by the Promise constructor
-  // resolve() - called when operation succeeds
-  // reject() - called when operation fails
-
-  setTimeout(() => {
-    resolve("Promise is resolved!");
-  }, 2000); // Wait 2 seconds, then resolve
+  setTimeout(() => resolve("Promise resolved!"), 2000);
 });
+console.log(basicPromise); // Promise { <pending> }
 
-console.log(basicPromise); // Output: Promise { <pending> }
-
-// The promise is pending at first. We'll see the resolved value using .then()
-
-// ========== SECTION 2: PROMISE RESOLUTION WITH .then() ==========
-
-console.log("\n--- SECTION 2: Promise Resolution & .then() ---\n");
-
-/**
- * .then() method is used to handle resolved promises
- * The value passed to resolve() is received in .then()
- */
-
+// 2. USING .then() - Handle resolved promises
 const simplePromise = new Promise((resolve) => {
-  setTimeout(() => {
-    resolve("Operation completed successfully!");
-  }, 1500);
+  setTimeout(() => resolve("Success!"), 1000);
 });
+simplePromise.then((result) => console.log("Result:", result));
 
-// Method 1: Using .then() with explicit callback
-simplePromise.then((result) => {
-  console.log("Result from promise:", result);
-});
-
-// Method 2: Chain multiple .then() calls
-const chainedPromise = new Promise((resolve) => {
-  resolve(5);
-});
-
-chainedPromise
-  .then((value) => {
-    console.log("First .then():", value); // 5
-    return value * 2; // Return transformed value
+// 3. CHAINING .then() & ERROR HANDLING
+Promise.resolve(5)
+  .then((val) => {
+    console.log("Chain:", val);
+    return val * 2;
   })
-  .then((value) => {
-    console.log("Second .then():", value); // 10
-    return value + 5;
-  })
-  .then((value) => {
-    console.log("Third .then():", value); // 15
-  });
+  .then((val) => console.log("Result:", val));
 
-// ========== SECTION 3: ERROR HANDLING WITH .catch() ==========
+Promise.reject("Error!").catch((err) => console.log("Caught:", err));
 
-console.log("\n--- SECTION 3: Error Handling with .catch() ---\n");
-
-/**
- * .catch() method is used to handle rejected promises
- * If any promise rejects, .catch() will catch the error
- */
-
-const rejectedPromise = new Promise((resolve, reject) => {
-  setTimeout(() => {
-    reject("Something went wrong!"); // Reject the promise
-  }, 1000);
-});
-
-rejectedPromise
-  .then((result) => {
-    console.log("Success:", result);
-  })
-  .catch((error) => {
-    console.log("Error caught:", error); // This will execute
-  });
-
-/**
- * Combining .then() and .catch()
- * Pattern: Promise -> .then(success) -> .catch(error)
- */
-const combinedPromise = new Promise((resolve) => {
-  resolve("All good!");
-});
-
-combinedPromise
-  .then((res) => console.log(res))
-  .catch((err) => console.log("Error:", err));
-
-// ========== SECTION 4: PROMISE API METHODS ==========
-
-console.log("\n--- SECTION 4: Promise API Methods ---\n");
-
-/**
- * Promise.resolve() - Instantly creates a resolved promise
- * Useful for converting values to promises
- */
-const instantResolve = Promise.resolve("Instantly resolved!");
-console.log("Promise.resolve():", instantResolve);
+// 5. PROMISE API METHODS
+const instantResolve = Promise.resolve("Instant!");
 instantResolve.then(console.log);
 
-/**
- * Promise.reject() - Instantly creates a rejected promise
- * Useful for error scenarios
- */
-const instantReject = Promise.reject("Instantly rejected!");
-instantReject.catch((err) => console.log("Caught rejection:", err));
+// Promise.all() - Wait for all promises
+Promise.all([
+  Promise.resolve("Promise 1"),
+  Promise.resolve("Promise 2"),
+  Promise.resolve("Promise 3"),
+]).then((results) => console.log("All resolved:", results));
 
-/**
- * Promise.all() - Waits for all promises to resolve
- * Returns array of all results in order
- * If ANY promise rejects, the entire .all() rejects
- */
-console.log("\nPromise.all() example:");
-
-const allPromises = Promise.all([
-  Promise.resolve("Promise 1 resolved"),
-  Promise.resolve("Promise 2 resolved"),
-  Promise.resolve("Promise 3 resolved"),
-]);
-
-allPromises
-  .then((results) => {
-    console.log("All promises resolved:", results);
-  })
-  .catch((error) => {
-    console.log("One promise failed:", error);
-  });
-
-/**
- * Promise.race() - Returns result of first settled promise
- * (whichever resolves or rejects first)
- */
-console.log("\nPromise.race() example:");
-
-const racePromises = Promise.race([
+// Promise.race() - First to finish wins
+Promise.race([
   new Promise((res) => setTimeout(() => res("First"), 1000)),
   new Promise((res) => setTimeout(() => res("Second"), 500)),
-  new Promise((res) => setTimeout(() => res("Third"), 1500)),
-]);
+]).then((winner) => console.log("Winner:", winner));
 
-racePromises.then((winner) => {
-  console.log("Race winner:", winner); // Will be "Second"
-});
-
-// ========== SECTION 5: ASYNC/AWAIT BASICS ==========
-
-console.log("\n--- SECTION 5: Async/Await Basics ---\n");
-
-/**
- * Async/Await is syntactic sugar over Promises
- * Makes asynchronous code look and behave like synchronous code
- *
- * Rules:
- * - async function always returns a Promise
- * - await can only be used inside async function
- * - await pauses execution until Promise settles
- */
-
-// Create a promise for demonstration
+// 6. ASYNC/AWAIT - Modern syntax (cleaner than .then())
 const delayedPromise = new Promise((resolve) => {
-  setTimeout(() => {
-    resolve("Data fetched after 2 seconds!");
-  }, 2000);
+  setTimeout(() => resolve("Data fetched!"), 2000);
 });
 
-// Traditional .then() approach
-function traditionalApproach() {
-  console.log("Fetching data...");
-  return delayedPromise
-    .then((result) => {
-      console.log("Result:", result);
-    });
-}
-
-// Modern async/await approach
 async function modernApproach() {
-  console.log("Fetching data (async)...");
-  const result = await delayedPromise; // Waits for promise to resolve
-  console.log("Result (async):", result);
+  console.log("Fetching...");
+  const result = await delayedPromise; // Wait for promise
+  console.log("Result:", result);
 }
-
-// Call the async function
 modernApproach();
 
-/**
- * Async function automatically wraps return value in Promise
- */
-async function getProcessedData() {
-  const data = await delayedPromise;
-  return `Processed: ${data}`; // Implicitly wrapped in Promise
-}
-
-getProcessedData().then(console.log);
-
-// ========== SECTION 6: ERROR HANDLING WITH TRY/CATCH ==========
-
-console.log("\n--- SECTION 6: Error Handling with Try/Catch ---\n");
-
-/**
- * Use try/catch inside async functions for clean error handling
- * try block: code that might fail
- * catch block: handles errors
- */
-
-async function safeAsyncOperation() {
-  try {
-    const result = await delayedPromise;
-    console.log("Success:", result);
-  } catch (error) {
-    console.log("Error caught in try/catch:", error);
-  }
-}
-
-safeAsyncOperation();
-
-/**
- * Simulating error scenario
- */
-const failingPromise = new Promise((resolve, reject) => {
-  setTimeout(() => {
-    reject("Database connection failed!");
-  }, 1500);
+// 7. ERROR HANDLING WITH TRY/CATCH
+const failingPromise = new Promise((res, rej) => {
+  setTimeout(() => rej("Connection failed!"), 1500);
 });
 
 async function handleError() {
   try {
-    console.log("Attempting operation...");
     const result = await failingPromise;
-    console.log("Result:", result);
+    console.log(result);
   } catch (error) {
-    console.log("Caught error:", error); // This will execute
+    console.log("Caught error:", error);
   } finally {
-    console.log("Operation complete (finally block always runs)");
+    console.log("Finally always runs");
   }
 }
-
 handleError();
 
-/**
- * Multiple awaits in sequence
- */
-async function sequentialOperations() {
-  try {
-    console.log("\nStarting sequential operations...");
-    
-    const result1 = await Promise.resolve("Step 1 done");
-    console.log(result1);
-    
-    const result2 = await Promise.resolve("Step 2 done");
-    console.log(result2);
-    
-    const result3 = await Promise.resolve("Step 3 done");
-    console.log(result3);
-    
-    console.log("All steps completed!");
-  } catch (error) {
-    console.log("Error:", error);
-  }
-}
-
-sequentialOperations();
-
-// ========== SECTION 7: PRACTICAL EXAMPLES ==========
-
-console.log("\n--- SECTION 7: Practical Examples ---\n");
-
-/**
- * Example 1: Simulating API call with async/await
- */
+// 8. PRACTICAL EXAMPLE - Simulated API call
 function fetchUserData(userId) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve({
-        id: userId,
-        name: "John Doe",
-        email: "john@example.com"
-      });
+      const users = {
+        1: { id: 1, name: "Sumedha", email: "sumedha@example.com" },
+        2: { id: 2, name: "Arghya", email: "arghya@example.com" },
+      };
+      resolve(users[userId]);
     }, 1000);
   });
 }
 
 async function getUserInfo(userId) {
   try {
-    console.log("Fetching user...");
     const user = await fetchUserData(userId);
-    console.log("User found:", user);
-    return user;
+    console.log("User:", user);
   } catch (error) {
-    console.log("Failed to fetch user:", error);
+    console.log("Error:", error);
   }
 }
+getUserInfo(1);
 
-getUserInfo(123);
-
-/**
- * Example 2: Promise.all() with async/await
- */
+// 9. FETCH MULTIPLE USERS with Promise.all()
 async function fetchMultipleUsers() {
-  try {
-    console.log("\nFetching multiple users...");
-    const users = await Promise.all([
-      fetchUserData(1),
-      fetchUserData(2),
-      fetchUserData(3),
-    ]);
-    console.log("All users fetched:", users);
-  } catch (error) {
-    console.log("Error fetching users:", error);
-  }
+  const users = await Promise.all([
+    fetchUserData(1), // Sumedha
+    fetchUserData(2), // Arghya
+  ]);
+  console.log("All users:", users);
 }
-
 fetchMultipleUsers();
-
-// ========== END OF TUTORIAL ==========
-
-console.log("\n--- End of Async/Await Tutorial ---\n");
