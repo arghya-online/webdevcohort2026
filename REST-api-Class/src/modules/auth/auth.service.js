@@ -1,24 +1,27 @@
 import User from "./auth.model.js";
 import ApiError from "../../common/utils/api-error.js";
-import { generateAccessToken, generateRefreshToken } from "./auth.utils.js";
+import { createHash } from "crypto";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+  generateResetToken,
+} from "../../common/utils/jwt-utils.js";
 import { hash, compare } from "bcryptjs";
-import { generateResetToken } from "../../common/utils/jwt-utils.js";
-
-const hashToken = (token) => hash(token, 10);
 
 const register = async ({ name, email, password, role }) => {
   // Here you would typically interact with your database to create a new user
   const existing = await User.findOne({ email });
   if (existing) throw ApiError.conflict("Email already in use");
 
-  const { rawToken, hashedToken } = User.generateResetToken();
+  const { hashedToken } = generateResetToken();
 
   const user = await User.create({
     name,
     email,
     password,
     role,
-    verficationToken: hashedToken,
+    verificationToken: hashedToken,
   });
 
   //TODO: Send verification email with rawToken
@@ -36,17 +39,16 @@ const login = async ({ email, password }) => {
   const user = await User.findOne({ email }).select("+password");
   if (!user) throw ApiError.unauthorized("Invalid email or password");
 
-  const isPasswordValid = await compare(password, user.password);
-  if (!isPasswordValid)
-    throw ApiError.unauthorized("Invalid email or password");
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch) throw ApiError.unauthorized("Invalid email or password");
 
   if (!user.isVerified)
     throw ApiError.unauthorized("Please verify your email before logging in");
 
   const accessToken = generateAccessToken({ id: user._id, role: user.role });
-  const refreshToken = hashToken(generateRefreshToken({ id: user._id }));
+  const refreshToken = generateRefreshToken({ id: user._id });
 
-  user.refreshToken = hashToken(refreshToken);
+  user.refreshToken = await hash(refreshToken, 10);
   await user.save();
 
   const userObj = user.toObject();
@@ -60,11 +62,12 @@ const login = async ({ email, password }) => {
 const refresh = async (token) => {
   if (!token) throw ApiError.unauthorized("No token provided");
 
-  const decoded = verify(token, process.env.REFRESH_TOKEN_SECRET);
+  const decoded = verifyRefreshToken(token);
   const user = await User.findById(decoded.id).select("+refreshToken");
   if (!user) throw ApiError.unauthorized("User Not found");
 
-  if (user.refreshToken !== hashToken(token)) {
+  const isValid = await compare(token, user.refreshToken || "");
+  if (!isValid) {
     throw ApiError.unauthorized("Invalid token");
   }
 
@@ -92,25 +95,54 @@ const forgotPassword = async (email) => {
 
   const { rawToken, hashedToken } = generateResetToken();
 
-  user.passwordResetToken = hashedToken;
-  user.passwordResetExpires = Date.now() + 3600000;
+  user.resetPasswordToken = hashedToken;
+  user.resetPasswordExpires = Date.now() + 3600000;
   await user.save();
 
   //TODO: Send password reset email with rawToken
 };
 
 const resetPassword = async (token, newPassword) => {
-  const hashedToken = hashToken(token);
+  const hashedToken = createHash("sha256").update(token).digest("hex");
   const user = await User.findOne({
-    passwordResetToken: hashedToken,
-    passwordResetExpires: { $gt: Date.now() },
+    resetPasswordToken: hashedToken,
+    resetPasswordExpires: { $gt: Date.now() },
   });
   if (!user) throw ApiError.unauthorized("Invalid or expired token");
 
   user.password = newPassword;
-  user.passwordResetToken = undefined;
-  user.passwordResetExpires = undefined;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
   await user.save();
 };
 
-export { register, login, refresh, logout, forgotPassword, resetPassword };
+const getProfile = async (userId) => {
+  const user = await User.findById(userId).select("-password -refreshToken");
+  if (!user) throw ApiError.notFound("User not found");
+  return user;
+};
+
+const verifyEmail = async (token) => {
+  const hashedToken = createHash("sha256").update(token).digest("hex");
+  const user = await User.findOne({ verificationToken: hashedToken }).select(
+    "+verificationToken",
+  );
+  if (!user) throw ApiError.unauthorized("Invalid verification token");
+
+  //if user is not found,
+  user.isVerified = true;
+  user.verificationToken = undefined;
+  await user.save();
+  return user;
+};
+// - this function takes a verification token, hashes it, and looks for a user with that hashed token in the database.
+export {
+  register,
+  login,
+  refresh,
+  logout,
+  forgotPassword,
+  resetPassword,
+  getProfile,
+  verifyEmail,
+};

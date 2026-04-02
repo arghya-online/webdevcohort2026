@@ -37,5 +37,4 @@ export {
   verifyAccessToken,
   generateRefreshToken,
   verifyRefreshToken,
-  generateResetToken,
 };

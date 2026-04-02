@@ -14,7 +14,7 @@ const start = async () => {
 
 start().catch((err) => {
   console.error("Failed to start server", err);
-  process.exit(1);
+  process.exit(1); // exit is optional, but it can be used to indicate that the server failed to start. Nothing just logs the error to the console and allows the process to continue running, which may not be desirable in a production environment.
 });
 
 const PORT = process.env.PORT || 3000;

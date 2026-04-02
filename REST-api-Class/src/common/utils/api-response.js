@@ -7,10 +7,10 @@ class ApiResponse {
     });
   }
 
-  static created(res, messege, data = null) {
+  static created(res, message, data = null) {
     return res.status(201).json({
       success: true,
-      messege,
+      message,
       data,
     });
   }
@@ -22,3 +22,5 @@ class ApiResponse {
     });
   }
 }
+
+export default ApiResponse;
