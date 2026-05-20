@@ -1,0 +1,23 @@
+{
+  "name": "socketcheckboxes",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.0",
+    "express": "^5.2.1",
+    "socket.io": "^4.8.3"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "nodemon": "^3.1.14"
+  }
+}

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Socket.IO Chat</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-orange-50 min-h-screen flex items-center justify-center p-6">
+    <!-- Main Chat Container -->
+    <div
+      class="w-full max-w-3xl h-[90vh] bg-white rounded-3xl shadow-2xl overflow-hidden border border-orange-100 flex flex-col"
+    >
+      <!-- Top Bar -->
+      <div class="bg-orange-500 text-white px-6 py-5 shadow-md">
+        <h1 class="text-2xl font-bold">Socket.IO Realtime Chat</h1>
+
+        <p class="text-sm text-orange-100 mt-1">
+          Simple broadcast based group chat
+        </p>
+      </div>
+
+      <!-- Messages Area -->
+
+      <div
+        class="flex-1 overflow-y-auto p-5 space-y-3 bg-orange-50"
+        id="messagesContainer"
+      ></div>
+
+      <!-- Bottom Input Area -->
+
+      <div class="p-4 border-t border-orange-100 bg-white flex gap-3">
+        <!-- Message Input -->
+
+        <!--
+          User types message here.
+
+          Later:
+          JS will collect input value
+          and emit socket event
+        -->
+
+        <input
+          type="text"
+          placeholder="Type a message..."
+          class="flex-1 px-5 py-3 rounded-2xl border border-orange-200 outline-none focus:ring-2 focus:ring-orange-400 text-sm"
+          id="messageInput"
+        />
+
+        <!-- Send Button -->
+
+        <!--
+          Later:
+          add click listener
+          and emit socket event
+        -->
+
+        <button
+          class="bg-orange-500 hover:bg-orange-600 transition-all text-white px-6 rounded-2xl font-medium shadow-md"
+          id="btn"
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const messageContainer = document.getElementById("messagesContainer");
+    const messageInput = document.getElementById("messageInput");
+    const button = document.getElementById("btn");
+
+    const socket = io();
+
+    button.addEventListener("click", () => {
+      const message = messageInput.value;
+      socket.broadcast.emit("sendMessage", { message: message });
+      messageInput.value = "";
+    });
+
+    if (messageInput) {
+      messageInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+          const message = messageInput.value;
+          socket.emit("sendMessage", { message: message });
+          messageInput.value = "";
+        }
+      });
+    }
+
+    socket.on("broadcastMessage", (data) => {
+      console.log("New message:", data);
+
+      const messageElement = document.createElement("div");
+
+      if (data.id === socket.id) {
+        messageElement.className =
+          "bg-green-100 border ml-40 border-green-300 rounded-2xl px-4 py-3 shadow-sm self-end";
+      } else {
+        messageElement.className =
+          "bg-white border border-orange-100 rounded-2xl px-4 py-3 mr-40 shadow-sm";
+      }
+      // set message text
+      messageElement.innerText = `${data.id}: ${data.message}`;
+      messagesContainer.appendChild(messageElement);
+    });
+  </script>
+</html>
