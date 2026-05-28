@@ -1,0 +1,76 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&display=swap");
+@import "tailwindcss";
+
+:root {
+  --bg-main: #eae2b7;
+  --bg-card: #fcd5ce;
+  --text-main: #003049;
+  --text-muted: #d62828;
+  --border: rgba(0, 48, 73, 0.15);
+
+  --accent: #f77f00;
+  --accent-bg: #fcbf49;
+  --accent-border: #f77f00;
+
+  --social-bg: rgba(252, 191, 73, 0.2);
+  --shadow: 0 4px 12px rgba(214, 40, 40, 0.1);
+}
+
+::selection {
+  background-color: #ff9d00;
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background-color: #ff0099;
+  color: #ffffff;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-main);
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+}
+
+a {
+  color: var(--text-muted);
+}
+
+.shell {
+  max-width: 600px;
+  margin: 40px auto 24px;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.Job {
+  margin-bottom: 12px;
+}
+
+.tab {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.tab button {
+  min-width: 120px;
+}
